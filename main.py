@@ -1,4 +1,5 @@
 import logging
+
 from core.llm import DeepSeekLLM
 from tools.registry import ToolRegistry
 from tools.executor import ToolExectuor
@@ -50,11 +51,7 @@ parameters1 = {
 tools.register("calculator","两数相加",parameters,add)
 tools.register("division","两数相除",parameters1,division)
 print(tools.get_tools_schema())
-arguments={
-    "a":31,
-    "b":0
-}
-
+arguments = '{"a": 10, "b": }'
 executor=ToolExectuor(tools)
 print(executor.execute("division",arguments))
 #tools.register("calculator","两数相加",parameters,add)

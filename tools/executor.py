@@ -10,18 +10,22 @@ class ToolExectuor():
         self.registry = registry
 
     def execute(self,tool_name,arguments):
+        
         # 判断 arguments 类型
         if isinstance(arguments, str):
             try:
                 arguments = json.loads(arguments)
             except json.JSONDecodeError as e:
-                raise ValueError("arguments不是合法的JSON字符串") from e
+                logger.warning("Tool '%s' received invalid JSON: %s",tool_name,e.msg)
+                raise
 
         elif not isinstance(arguments, dict):
+            logger.warning(tool_name)
             raise TypeError("arguments必须是字符串或字典")
 
         # 检查JSON解析后的结果
         if not isinstance(arguments, dict):
+            logger.warning(tool_name)
             raise TypeError("JSON解析结果必须是字典")
 
         #获取参数schema
@@ -34,8 +38,8 @@ class ToolExectuor():
             instance=arguments,
             schema=arguments_schema
         )
-        except:
-            logger.warning()
+        except ValidationError as e:
+            logger.warning("Tool '%s' argument validation failed: %s",tool_name,e.message)
             raise
         """
         它需要完成：
