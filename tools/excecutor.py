@@ -1,0 +1,41 @@
+from tools.registry import ToolRegistry
+import json
+from jsonschema import ValidationError, validate
+class ToolExcetuor():
+    def __init__(self, registry: ToolRegistry):
+        #后续 Executor 不仅需要访问工具数据，还需要使用 Registry 提供的 get_tool() 方法，保存实例
+        self.registry = registry
+
+    def execute(self,tool_name,arguments):
+        # 判断 arguments 类型
+        if isinstance(arguments, str):
+            try:
+                arguments = json.loads(arguments)
+            except json.JSONDecodeError as e:
+                raise ValueError("arguments不是合法的JSON字符串") from e
+
+        elif not isinstance(arguments, dict):
+            raise TypeError("arguments必须是字符串或字典")
+
+        # 检查JSON解析后的结果
+        if not isinstance(arguments, dict):
+            raise TypeError("JSON解析结果必须是字典")
+
+        #获取参数schema
+        tool_use=self.registry.get_tool(tool_name)
+        arguments_schema=tool_use["parameters"]
+        
+        #这个顺序应该是instance,schema，成功返回None，失败直接会ValidationError
+        validate(
+            instance=arguments,
+            schema=arguments_schema
+        )
+
+        """
+        它需要完成：
+        1. 根据 tool_name 找到对应工具。
+        2. 从工具记录中提取 Python function。
+        3. 将 arguments 传递给 function。
+        4. 获取函数执行结果并返回。
+        """
+        return tool_use["function"](**arguments)
