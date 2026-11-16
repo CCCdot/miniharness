@@ -1,7 +1,10 @@
-from tools.registry import ToolRegistry
 import json
+import logging
+
 from jsonschema import ValidationError, validate
-class ToolExcetuor():
+from tools.registry import ToolRegistry
+logger=logging.getLogger(__name__)
+class ToolExectuor():
     def __init__(self, registry: ToolRegistry):
         #后续 Executor 不仅需要访问工具数据，还需要使用 Registry 提供的 get_tool() 方法，保存实例
         self.registry = registry
@@ -26,11 +29,14 @@ class ToolExcetuor():
         arguments_schema=tool_use["parameters"]
         
         #这个顺序应该是instance,schema，成功返回None，失败直接会ValidationError
-        validate(
+        try:
+            validate(
             instance=arguments,
             schema=arguments_schema
         )
-
+        except:
+            logger.warning()
+            raise
         """
         它需要完成：
         1. 根据 tool_name 找到对应工具。
@@ -38,4 +44,8 @@ class ToolExcetuor():
         3. 将 arguments 传递给 function。
         4. 获取函数执行结果并返回。
         """
-        return tool_use["function"](**arguments)
+        try:
+            return tool_use["function"](**arguments)
+        except Exception:
+            logger.exception("Tool '%s' execution failed", tool_name)
+            raise

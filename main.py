@@ -1,7 +1,7 @@
 import logging
 from core.llm import DeepSeekLLM
 from tools.registry import ToolRegistry
-from tools.excecutor import ToolExcetuor
+from tools.executor import ToolExectuor
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -51,10 +51,11 @@ tools.register("calculator","两数相加",parameters,add)
 tools.register("division","两数相除",parameters1,division)
 print(tools.get_tools_schema())
 arguments={
-    "a":"31"
+    "a":31,
+    "b":0
 }
 
-executor=ToolExcetuor(tools)
+executor=ToolExectuor(tools)
 print(executor.execute("division",arguments))
 #tools.register("calculator","两数相加",parameters,add)
 #tools.get_tool("minus")
