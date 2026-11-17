@@ -1,8 +1,8 @@
 class AgentState:
-    def __init__(self):
+    def __init__(self,session_id):
         self.messages=[]
         self.iterations=0
-        self.session_id=self.session_id
+        self.session_id=session_id
 
     def add_message(self,message):
         self.messages.append(message)

@@ -5,12 +5,12 @@ logger = logging.getLogger(__name__)
 
 
 class AgentRuntime:
-    def __init__(self, llm, registry, executor):
+    def __init__(self, llm, registry, executor,state):
         # 注入三个依赖对象
         self.llm = llm
         self.tool_registry = registry
         self.tool_executor = executor
-        self.messages=[]
+        self.agentstate=state
 
     def run(self, user_input, max_iterations=10):
         # 检查最大迭代次数
@@ -18,7 +18,7 @@ class AgentRuntime:
             raise ValueError("max_iterations必须是正整数")
 
         # 记住之前的信息
-        messages = self.messages
+        messages = self.agentstate.messages
         new_message={"role": "user", "content": user_input}
         messages.append(new_message)
 

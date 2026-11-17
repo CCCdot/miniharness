@@ -1,8 +1,11 @@
 import logging
+from datetime import date,timedelta
 from agent import AgentRuntime
 from core.llm import DeepSeekLLM
 from tools.registry import ToolRegistry
 from tools.executor import ToolExectuor
+from agent.state import AgentState
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -17,6 +20,8 @@ def division(a,b):
     return a/b
 tools=ToolRegistry()
 tools_executor=ToolExectuor(tools)
+t=date.today()
+agent_state=AgentState(t)
 #name,description,parameters,function
 parameters = {
     "type": "object",
@@ -51,7 +56,8 @@ parameters1 = {
 tools.register("calculator","两数相加",parameters,add)
 tools.register("division","两数相除",parameters1,division)
 print(tools.get_tools_schema())
-agent=AgentRuntime(DeepSeekLLM(),tools,tools_executor)
+agent=AgentRuntime(DeepSeekLLM(),tools,tools_executor,agent_state)
+print(agent_state.session_id)
 user_input = """
 请严格按以下顺序使用工具：
 
@@ -61,5 +67,5 @@ user_input = """
 必须分两轮完成工具调用，不要直接心算，也不要省略任何一步。
 """
 
-print(agent.run("请使用division计算100除以5"))
+
 print(agent.run("把刚才的结果再加上20"))
