@@ -9,4 +9,4 @@ class AgentState:
 
     def reset(self):
         self.messages=[]
-        self.iteration=0
+        self.iterations=0
