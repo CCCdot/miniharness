@@ -53,4 +53,4 @@ tools.register("division","两数相除",parameters1,division)
 print(tools.get_tools_schema())
 agent=AgentRuntime(DeepSeekLLM(),tools,tools_executor)
 user_input="计算 100 除以 5，再把结果加上 20"
-agent.run(user_input)
+print(agent.run(user_input))

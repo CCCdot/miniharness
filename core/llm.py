@@ -37,9 +37,12 @@ class DeepSeekLLM():
                 model=self.model,
                 messages=messages,
             )
-        if response.choices:
-            logger.error("api返回choices为空")
-            raise IndexError("api返回choices为空")
+        if not response.choices:
+            logger.error(
+            "DeepSeek returned empty choices. Raw response: %s",
+            response.model_dump_json(indent=2, exclude_none=True)
+            )
+            raise RuntimeError("DeepSeek API returned an empty choices list")
         message = response.choices[0].message
 
         if message is None:

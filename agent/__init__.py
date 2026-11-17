@@ -10,7 +10,7 @@ class AgentRuntime:
                  "content":user_input}]
         tools_schema=self.tool_registry.get_tools_schema()
         response=self.llm.chat(messages, tools_schema)
-        if response.get("tool_calls"):
+        while response.get("tool_calls"):
             messages.append(response)
             #这里应该是个列表，然后这个列表里有很多工具，暂时只考虑一个工具的存在
             tool_call = response["tool_calls"][0]
@@ -25,8 +25,5 @@ class AgentRuntime:
             messages.append(tool_result)
             #信息返回llm,保存第二次回答
             response=self.llm.chat(messages, tools_schema)
-            if not response.get("tool_calls"):
-                return response["content"]
 
-        else:
-            return response["content"]
+        return response["content"]
