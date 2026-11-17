@@ -57,6 +57,5 @@ class ToolRegistry():
                 "parameters": tool["parameters"]
             }
         }
-
-        tools_schema.append(tool_schema)
+            tools_schema.append(tool_schema)
         return tools_schema
